@@ -1,16 +1,20 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from './page.module.css'
+import { PrismaClient } from '@prisma/client'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default async function Home() {
+  const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'] })
+  const things = await prisma.thing.findMany()
   return (
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
+          {things.map((thing) => (
+            <div key={thing.id}>{thing.name}</div>
+          ))}
         </p>
         <div>
           <a
